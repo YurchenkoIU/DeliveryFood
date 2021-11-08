@@ -1,4 +1,5 @@
-const cardsRestaurants = document.querySelector('.cards-restaurants');
+const partners = () => {
+    const cardsRestaurants = document.querySelector('.cards-restaurants');
 
 console.dir(cardsRestaurants);
 
@@ -52,3 +53,6 @@ fetch('https://deliveryfood-3eb10-default-rtdb.firebaseio.com/db/partners.json')
 .then((Response) => Response.json())
 .then((data) => renderItems(data))
 .catch((error) => {console.log(error)});
+}
+
+partners();

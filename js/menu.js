@@ -1,7 +1,39 @@
-const cardsMenu = document.querySelector('.cards-menu');
+const menu = () => {
+    const cardsMenu = document.querySelector('.cards-menu');
+
+    const cartArray = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : [];
+
+    const changeItem = (restourant) => {
+        const restaurantTitle = document.querySelector('.restaurant-title');
+        const rating = document.querySelector('.rating');
+        const price = document.querySelector('.price');
+        const category = document.querySelector('.category');
+    
+        restaurantTitle.textContent = restourant.name;
+        rating.textContent = restourant.stars;
+        price.textContent = `От ${restourant.price} ₽`;
+        category.textContent = restourant.kitchen;
+    
+    };
+    
+    const addToCart = (cartItem) => {
+        //console.log(cartArray.some((item) => item.id === cartItem.id))
+        if (cartArray.some((item) => item.id === cartItem.id)) {
+            cartArray.map((item) => {
+            if (item.id === cartItem.id) {
+                item.count++;
+            }
+            return item;
+            })
+        } else {            
+            cartArray.push(cartItem);
+        }
+
+        localStorage.setItem('cart', JSON.stringify(cartArray));
+    };
 
 const renderItems = (data) => {
-    data.forEach(({description, image, name, price}) => {        
+    data.forEach(({description, image, name, price, id}) => {        
         const card = document.createElement('div');
 
         card.classList.add('card');
@@ -27,23 +59,17 @@ const renderItems = (data) => {
 						</div>
 						<!-- /.card-text -->
         `
-        console.log(card);
+
+        card.querySelector('.button-card-text').addEventListener('click', () => {
+            
+            addToCart({name, price, id,  count: 1});
+        })
+        
         cardsMenu.append(card);
     });    
 };
 
-const changeItem = (restourant) => {
-    const restaurantTitle = document.querySelector('.restaurant-title');
-    const rating = document.querySelector('.rating');
-    const price = document.querySelector('.price');
-    const category = document.querySelector('.category');
 
-    restaurantTitle.textContent = restourant.name;
-    rating.textContent = restourant.stars;
-    price.textContent = `От ${restourant.price} ₽`;
-    category.textContent = restourant.kitchen;
-
-};
 
 if (localStorage.getItem('restourant')) {
     const restourant = JSON.parse(localStorage.getItem('restourant'));
@@ -57,4 +83,7 @@ if (localStorage.getItem('restourant')) {
 } else {
     window.location.href='/'
 };
+}
 
+
+menu();
