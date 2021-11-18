@@ -4,11 +4,14 @@ const cart = () => {
     const close = modalCart.querySelector('.close');
     const modalBody = document.querySelector('.modal-body');
     const buttonSent = modalCart.querySelector('.button-primary')
+    const modalPricetag = modalCart.querySelector('.modal-pricetag')
+    const clearCart = modalCart.querySelector('.clear-cart')
     
 const resetCart = () => {
     modalBody.innerHTML='';
     localStorage.removeItem('cart');
-    modalCart.classList.remove('is-open')
+    modalCart.classList.remove('is-open');
+    modalPricetag.textContent = 0;
 }
 
     const incrementCount = (id) => {
@@ -31,10 +34,23 @@ const resetCart = () => {
                 item.count = item.count > 0 ? item.count - 1 : 0;
             }
             return item;
-        })
+        })  
 
         localStorage.setItem('cart', JSON.stringify(cartArray));
         renderItems(cartArray);        
+    }
+
+    const summCount = () => {
+        const cartArray = JSON.parse(localStorage.getItem('cart'))
+
+        console.log(
+        cartArray.reduce(function(sum, current) {
+            return sum + current.count*current.price;
+        }, 0))
+
+        return cartArray.reduce(function(sum, current) {
+            return sum + current.count*current.price;
+        }, 0)
     }
 
     const renderItems = (data) => {
@@ -54,8 +70,11 @@ const resetCart = () => {
 						<button class="counter-button btn-inc" data-index="${id}">+</button>
 					</div>
         `
-        modalBody.append(cartElem);        
+        modalBody.append(cartElem);  
+        
+
         });
+        modalPricetag.textContent = summCount();
     }
 
     modalBody.addEventListener('click', (e) => {
@@ -66,7 +85,7 @@ const resetCart = () => {
         } else if (e.target.classList.contains ('btn-dec')) {
             decrementCount(e.target.dataset.index);
         }
-        
+        modalPricetag.textContent = summCount();
     })
 
     buttonSent.addEventListener('click', () => {
@@ -97,6 +116,11 @@ const resetCart = () => {
     close.addEventListener('click', () => {
         modalCart.classList.remove('is-open');        
     });
+
+    clearCart.addEventListener('click',() =>{
+        resetCart();
+    })
 }
+
 
 cart();
